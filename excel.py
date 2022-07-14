@@ -25,6 +25,5 @@ def create(path: str = "static/files/Template.xlsx"):
 
     path_end = path.replace(".xlsx", "") + "_final" + ".xlsx"
     write_excel(data, path_end)
-    print(data)
 
 create()
