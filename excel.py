@@ -1,8 +1,7 @@
-# Import pandas
 import pandas as pd
 import request
 
-cols = ['os', 'ag', 'type', 'key', 'tg', 'af']
+cols = ['os', 'ag', 'type', 'key', 'tg', 'af', 'Link']
 
 
 def read_excel(path: str = "static/files/Template.xlsx") -> object:
@@ -11,14 +10,21 @@ def read_excel(path: str = "static/files/Template.xlsx") -> object:
     return data
 
 
-def write_excel(data2: object, path: str = "static/files/Template2.xlsx"):
-    df = pd.DataFrame(data2)
+def write_excel(data: object, path: str = "static/files/Template2.xlsx"):
+    df = pd.DataFrame(data)
     writer = pd.ExcelWriter(path, engine='xlsxwriter')
     df.to_excel(writer, sheet_name='Sheet1', index=False)
     writer.save()
 
 
-data = read_excel()
-data["Link"] = request.send(data['os'][0], data['ag'][0], data['type'][0], data['key'][0], data['tg'][0], data['af'][0])
-write_excel(data, "static/files/Template2.xlsx")
-print(data)
+def create(path: str = "static/files/Template.xlsx"):
+    data: object = read_excel(path)
+    for ind in data.index:
+        data["Link"][ind] = request.send(data['os'][ind], data['ag'][ind], data['type'][ind], data['key'][ind],
+                                         data['tg'][ind], data['af'][ind])
+
+    path_end = path.replace(".xlsx", "") + "_final" + ".xlsx"
+    write_excel(data, path_end)
+    print(data)
+
+create()
