@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, send_from_directory
 from flask_wtf import FlaskForm
 from wtforms import FileField, SubmitField
 from werkzeug.utils import secure_filename
@@ -28,11 +28,11 @@ def home():
         file.save(os.path.join(os.path.abspath(os.path.dirname(__file__)), app.config['UPLOAD_FOLDER'],
                                secure_filename(file.filename)))  # Then save the file
         fname = secure_filename(file.filename)
+        final_filename = fname.replace(".xlsx", "") + "_final" + ".xlsx"
         fpath = app.config['UPLOAD_FOLDER']
         excel.create(fpath + "/" + fname)
-        return render_template('index.html', form=form)
+        return send_from_directory(app.config['UPLOAD_FOLDER'], final_filename)
     return render_template('index.html', form=form)
-
 
 
 if __name__ == '__main__':
